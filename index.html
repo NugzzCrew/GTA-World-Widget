@@ -10,8 +10,8 @@
             --bg-white: rgba(255, 255, 255, 0.95);
             --bg-halloween: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 140, 0, 0.95) 100%);
             --bg-active: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(144, 238, 144, 0.95) 100%);
-            --border-grey: #cccccc;
-            --text-main: #333333;
+            --border-grey: rgba(64, 63, 63, 0.85);
+            --text-main: #232323;
         }
 
         body {
@@ -25,6 +25,7 @@
         }
 
         .widget-main {
+            /* Initial setup for Icon Mode */
             background-image: url('icons/day.png'), url('icons/night.png');
             background-position: center 0px, center 100px;
             background-size: cover;
@@ -39,6 +40,12 @@
             margin-bottom: 10px;
             transition: background 1s ease, background-position 1s ease-in-out;
             line-height: 1;
+        }
+
+        /* Full Background Mode Overrides */
+        .widget-main.full-bg {
+            background-size: cover;
+            background-position: center center !important;
         }
 
         /* Night Mode text color override */
@@ -74,7 +81,7 @@
         #current-weather-label {
             font-size: 10px;
             font-weight: 800;
-            color: #888;
+            color: #6d6d6d;
             text-transform: uppercase;
             margin-top: -5px;
             white-space: nowrap;
@@ -90,18 +97,43 @@
         }
 
         #day-label {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--text-main);
             text-transform: uppercase;
             line-height: 1;
+            text-shadow:
+                -1px -1px 0 rgba(255, 255, 255, 0.5),
+                1px -1px 0 rgba(255, 255, 255, 0.5),
+                -1px 1px 0 rgba(255, 255, 255, 0.5),
+                1px 1px 0 rgba(255, 255, 255, 0.5),
+                0px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         #time-label {
             font-size: 34px;
-            font-weight: 400;
+            font-weight: 700;
             color: var(--text-main);
             margin-top: 4px;
+            text-shadow:
+                -1px -1px 0 rgba(255, 255, 255, 0.5),
+                1px -1px 0 rgba(255, 255, 255, 0.5),
+                -1px 1px 0 rgba(255, 255, 255, 0.5),
+                1px 1px 0 rgba(255, 255, 255, 0.5),
+                0px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Specific glow for Night Mode */
+        .night-mode #day-label,
+        .night-mode #time-label {
+            text-shadow:
+                0 0 5px rgba(255, 255, 255, 0.4),
+                /* Outer glow */
+                -1px -1px 0 #006497,
+                /* Outline */
+                1px -1px 0 #006497,
+                -1px 1px 0 #006497,
+                1px 1px 0 #006497;
         }
 
         .event-bar {
@@ -115,7 +147,9 @@
 
         .event-card {
             background: var(--bg-white);
-            border: 2px solid #666;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             width: 48px;
             height: 48px;
@@ -125,6 +159,7 @@
             padding: 4px;
             margin: 2px;
             box-sizing: border-box;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .event-card img {
@@ -134,7 +169,9 @@
 
         .info-box {
             background: var(--bg-white);
-            border: 2px solid var(--border-grey);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-grey);
             border-radius: 8px;
             padding: 0 10px;
             height: 48px;
@@ -142,7 +179,7 @@
             min-width: 200px;
             display: none;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             margin-bottom: 8px;
             transition: background 0.5s ease;
             box-sizing: border-box;
@@ -170,7 +207,7 @@
         .box-label {
             font-size: 9px;
             font-weight: 800;
-            color: #888;
+            color: #666666;
             text-transform: uppercase;
             display: block;
             line-height: 1;
@@ -199,12 +236,17 @@
         }
 
         #debug-box {
+            background: var(--bg-white);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-color: #c0392b;
-            background: #fffcfc;
-            min-width: 260px;
+            border-radius: 8px;
+            min-width: 200px;
             display: none;
             height: auto;
             padding: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
         }
 
         .debug-text {
@@ -218,7 +260,7 @@
         #debug-log {
             color: #2980b9;
             margin-top: 4px;
-            border-top: 1px solid #ecc;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
             padding-top: 4px;
             font-size: 11px;
         }
@@ -228,7 +270,7 @@
 <body>
 
     <div id="main-widget" class="widget-main">
-        <div class="weather-container">
+        <div class="weather-container" id="main-weather-container">
             <img id="weather-icon" src="icons/clear-day.png" class="weather-icon">
             <div id="current-weather-label">LOADING...</div>
         </div>
@@ -240,13 +282,13 @@
 
     <div class="event-bar" id="event-bar"></div>
 
-    <div id="bigfoot-box" class="info-box">
-        <img src="icons/bigfoot.png" class="box-icon">
+    <div id="sasquatch-box" class="info-box">
+        <img src="icons/sasquatch.png" class="box-icon">
         <div class="box-content">
-            <span class="box-label">Next Bigfoot</span>
+            <span class="box-label">Next sasquatch</span>
             <div class="box-val-row">
-                <span id="bigfoot-val" class="box-val">Searching...</span>
-                <span id="bigfoot-timer" class="box-timer">00:00:00</span>
+                <span id="sasquatch-val" class="box-val">Searching...</span>
+                <span id="sasquatch-timer" class="box-timer">00:00:00</span>
             </div>
         </div>
     </div>
@@ -286,9 +328,13 @@
     </div>
 
     <script>
+        // URL Parameter Logic
+        const urlParams = new URLSearchParams(window.location.search);
+        const USE_ICONS_MODE = urlParams.get('icons') === 'true';
+
         // SETTINGS
-        const SHOW_DIAGNOSTICS = false;
-        const SHOW_NEXT_WEATHER = false;
+        const SHOW_DIAGNOSTICS = urlParams.get('showInfo') === 'true';
+        const SHOW_NEXT_WEATHER = urlParams.get('nextWeather') === 'true';
         const CURRENT_SEASON = "420WEEK";
         const SEASON_START = "2026-04-16";
         const SEASON_END = "2026-04-29";
@@ -297,7 +343,7 @@
 
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const sasquatchAudio = new Audio('./sasquatch.wav');
-        const survivalAudio = new Audio('./survival.wav');
+        const survivalAudio = new Audio('./survival.mp3');
 
         const triggerSchedule = {
             "21:00": { name: "Yeti", actionId: "PASTE_YETI_ID" },
@@ -307,7 +353,7 @@
 
         const eventLibrary = {
             "420WEEK": [
-                { name: "bigfoot", icon: "bigfoot.png", startH: 3.5, endH: 8.5, reqWeather: "foggy", msg: "👣 Bigfoot spotted in the fog!", notified: false },
+                { name: "sasquatch", icon: "sasquatch.png", startH: 3.5, endH: 8.5, reqWeather: "foggy", msg: "👣 sasquatch spotted in the fog!", notified: false },
                 { name: "Stoner Survival", icon: "stonerSurvival.png", startH: 16.33, endH: 20.33, msg: "💨 Stoner Survival active!", notified: false }
             ],
             "CHRISTMAS": [
@@ -421,14 +467,14 @@
             }
 
             const is420Active = (CURRENT_SEASON === "420WEEK" && todayStr >= SEASON_START && todayStr <= SEASON_END);
-            document.getElementById('bigfoot-box').style.display = is420Active ? "flex" : "none";
+            document.getElementById('sasquatch-box').style.display = is420Active ? "flex" : "none";
             document.getElementById('survival-box').style.display = is420Active ? "flex" : "none";
 
             updateWeatherDisplay(loopData, h, m, todayStr);
             updateEventCards(todayStr, decHour, currentRawWeather);
 
             if (is420Active) {
-                findNextBigfoot(loopData, decHour, rawUnix, currentRawWeather);
+                findNextsasquatch(loopData, decHour, rawUnix, currentRawWeather);
                 findNextSurvival(decHour, rawUnix);
             }
         }
@@ -436,19 +482,44 @@
         function updateWeatherDisplay(loopData, h, m, today) {
             const widget = document.getElementById('main-widget');
             const weatherBox = document.getElementById('weather-box');
+            const mainWeatherContainer = document.getElementById('main-weather-container');
             const isDay = (h >= 6 && h < 21);
             const current = weatherSchedule[loopData.index];
             const nextIdx = (loopData.index + 1) % weatherSchedule.length;
             const next = weatherSchedule[nextIdx];
 
-            if (isDay) {
-                widget.style.backgroundPosition = "center 0px, center 100px";
-                widget.classList.remove('night-mode');
+            // Mode Logic
+            if (USE_ICONS_MODE) {
+                // Current Version Logic
+                widget.classList.remove('full-bg');
+                mainWeatherContainer.style.display = "flex";
+                widget.style.backgroundImage = "url('icons/day.png'), url('icons/night.png')";
+                if (isDay) {
+                    widget.style.backgroundPosition = "center 0px, center 100px";
+                    widget.classList.remove('night-mode');
+                } else {
+                    widget.style.backgroundPosition = "center -100px, center 0px";
+                    widget.classList.add('night-mode');
+                }
             } else {
-                widget.style.backgroundPosition = "center -100px, center 0px";
-                widget.classList.add('night-mode');
+                // New Full-Background Mode Logic
+                widget.classList.add('full-bg');
+                mainWeatherContainer.style.display = "none";
+
+                const weatherKey = current.weather.charAt(0).toLowerCase() + current.weather.slice(1).replace(/\s+/g, '');
+                const timeSuffix = isDay ? "Day" : "Night";
+                const bgPath = `icons/widget-bg/${weatherKey}-${timeSuffix}.png`;
+
+                widget.style.backgroundImage = `url('${bgPath}')`;
+
+                if (isDay) {
+                    widget.classList.remove('night-mode');
+                } else {
+                    widget.classList.add('night-mode');
+                }
             }
 
+            // Next Weather Block
             weatherBox.style.display = SHOW_NEXT_WEATHER ? "flex" : "none";
             document.getElementById('weather-icon').src = getIconPath(current.weather, isDay);
 
@@ -485,7 +556,7 @@
 
                     if (!ev.notified) {
                         if (ev.msg) client.sendMessage(ev.msg);
-                        if (ev.name.toLowerCase() === "bigfoot") {
+                        if (ev.name.toLowerCase() === "sasquatch") {
                             sasquatchAudio.play().catch(e => console.log("Audio deferred", e));
                         }
                         if (ev.name.toLowerCase() === "stoner survival") {
@@ -521,12 +592,12 @@
             }
         }
 
-        function findNextBigfoot(loopData, decHour, currentUnix, currentWeather) {
+        function findNextsasquatch(loopData, decHour, currentUnix, currentWeather) {
             const BF_START = 3.5;
             const BF_END = 8.5;
-            const box = document.getElementById('bigfoot-box');
-            const timerElem = document.getElementById('bigfoot-timer');
-            const valElem = document.getElementById('bigfoot-val');
+            const box = document.getElementById('sasquatch-box');
+            const timerElem = document.getElementById('sasquatch-timer');
+            const valElem = document.getElementById('sasquatch-val');
 
             // 1. Check if currently active
             if (decHour >= BF_START && decHour < BF_END && currentWeather.toLowerCase() === "foggy") {
