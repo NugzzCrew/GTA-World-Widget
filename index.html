@@ -523,7 +523,7 @@
             weatherBox.style.display = SHOW_NEXT_WEATHER ? "flex" : "none";
             document.getElementById('weather-icon').src = getIconPath(current.weather, isDay);
 
-            const finalSeconds = Math.floor(loopData.remaining * 120) - (m * 2);
+            const finalSeconds = Math.floor(loopData.remaining * 120);
             document.getElementById('next-name').innerText = next.weather;
             document.getElementById('next-timer').innerText = formatTimer(finalSeconds);
             document.getElementById('next-weather-icon').src = getIconPath(next.weather, isDay);
